@@ -1,8 +1,10 @@
 package com.digitalinovation.cloudparking.service;
 
+import com.digitalinovation.cloudparking.exception.ParkingNotFoundException;
 import com.digitalinovation.cloudparking.model.Parking;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +35,16 @@ public class ParkingService {
     }
 
     public Parking findById(String id) {
+        Parking parking = parkingMap.get(id);
+        if(parking == null){
+            throw new ParkingNotFoundException(id);
+        }
         return parkingMap.get(id);
     }
 
     public Parking create(Parking parkingCreate) {
         String uuid = getUUID();
-        parkingCreate.setId((getUUID()));
+        parkingCreate.setId(uuid);
         parkingCreate.setEntryDate(LocalDateTime.now());
         parkingMap.put(uuid, parkingCreate);
         return parkingCreate;
